@@ -7,6 +7,8 @@ import pt.c01interfaces.s01knowledge.s01base.inter.IEnquirer;
 import pt.c01interfaces.s01knowledge.s01base.inter.IObjetoConhecimento;
 import pt.c01interfaces.s01knowledge.s01base.inter.IResponder;
 
+import java.util.*;
+
 public class Enquirer implements IEnquirer
 {
     IObjetoConhecimento obj;
@@ -19,25 +21,49 @@ public class Enquirer implements IEnquirer
 	@Override
 	public void connect(IResponder responder)
 	{
+//		Carregar base de conhecimento:
         IBaseConhecimento bc = new BaseConhecimento();
-		
-		obj = bc.recuperaObjeto("tiranossauro");
-
+//      Carregar os nomes de todos os animais:
+        int Tentativa = 0;
+        String nameList[] = bc.listaNomes();
+//		Chutar que o animal desejado eh o primeiro:
+		obj = bc.recuperaObjeto(nameList[Tentativa]);
+//		Obter a primeira pergunta:
 		IDeclaracao decl = obj.primeira();
 		
-        boolean animalEsperado = true;
-		while (decl != null && animalEsperado) {
+//		String historico[][];
+		Map<String, String> map = new HashMap<String, String>();
+		
+
+        
+		while (decl != null) {
 			String pergunta = decl.getPropriedade();
+			
+			String resposta;
+			
+			if (map.containsKey(pergunta)){
+				resposta = map.get(pergunta);
+			}else{
+			
+				resposta = responder.ask(pergunta);
+				
+				map.put(pergunta,resposta);
+			}
+			
 			String respostaEsperada = decl.getValor();
 			
-			String resposta = responder.ask(pergunta);
-			if (resposta.equalsIgnoreCase(respostaEsperada))
+			if (resposta.equalsIgnoreCase(respostaEsperada)){
 				decl = obj.proxima();
-			else
-				animalEsperado = false;
+			}else{
+				Tentativa++;
+				obj = bc.recuperaObjeto(nameList[Tentativa]);
+				decl = obj.primeira();
+			}
+			
+				
 		}
 		
-		boolean acertei = responder.finalAnswer("tiranossauro");
+		boolean acertei = responder.finalAnswer(nameList[Tentativa]);
 		
 		if (acertei)
 			System.out.println("Oba! Acertei!");
