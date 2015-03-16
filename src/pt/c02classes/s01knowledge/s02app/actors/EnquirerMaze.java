@@ -24,6 +24,16 @@ class MapPoint {
 		return new MapPoint(X - point.X, Y - point.Y);
 	}
 	
+	//Verificar igualdade entre posicoes mpPoint
+	public boolean mpIsEqual(MapPoint point)
+	{	  
+		if((point.X == this.X) && (point.Y == this.Y))		
+			return true;
+		
+		return false;
+		
+	}
+	
 }
 
 public class EnquirerMaze implements IEnquirer {
@@ -40,10 +50,36 @@ public class EnquirerMaze implements IEnquirer {
 		//Inicializar a pilha e adicionar a posicao inicial(0,0):
 		positionHistory = new Stack<MapPoint>();
 		positionHistory.push(new MapPoint(0,0));
-		return step();
+		if(step())
+		{	
+			System.out.println("HELLO !");
+			/*imprimir a pilha*/
+			while(positionHistory.empty() == false)
+			{
+				System.out.println("X: " + positionHistory.peek().X + "Y: "+ positionHistory.peek().Y);
+				positionHistory.pop();
+			}
+			return true;
+		}
+		else
+			return false;
 	}
 	
 	public boolean step(){
+		
+		/*Verificar se o jogador ja passou por aquela posicao*/
+		
+		//Recebe os elementos da pilha de posicoes enumerados
+		Enumeration<MapPoint> elements = positionHistory.elements();
+		/*
+		//Comparar o ultimo elemento da pilha com o restante
+		while(elements.hasMoreElements())
+		{	
+			//Se ja passou por alguma posicao, descartamos esse caminho
+			if(positionHistory.peek().mpIsEqual(elements.nextElement()))
+				return false;
+		}*/
+
 		//Verificar se chegmaos a saida:
 		if (responder.ask("aqui").equals("saida")){
 			return true;
@@ -106,6 +142,7 @@ public class EnquirerMaze implements IEnquirer {
 		}
 		return false;
 	}
+	
 	
 //	public boolean discover() {
 //		Scanner scanner = new Scanner(System.in);
