@@ -52,7 +52,7 @@ public class EnquirerMaze implements IEnquirer {
 		positionHistory.push(new MapPoint(0,0));
 		if(step())
 		{	
-			System.out.println("HELLO !");
+			System.out.println("Encontraod caminho!");
 			/*imprimir a pilha*/
 			while(positionHistory.empty() == false)
 			{
@@ -68,24 +68,25 @@ public class EnquirerMaze implements IEnquirer {
 	public boolean step(){
 		
 		/*Verificar se o jogador ja passou por aquela posicao*/
-		
-		//Recebe os elementos da pilha de posicoes enumerados
 		Enumeration<MapPoint> elements = positionHistory.elements();
-		/*
-		//Comparar o ultimo elemento da pilha com o restante
+		MapPoint mp = elements.nextElement();
 		while(elements.hasMoreElements())
 		{	
 			//Se ja passou por alguma posicao, descartamos esse caminho
-			if(positionHistory.peek().mpIsEqual(elements.nextElement()))
+			
+			if(positionHistory.peek().mpIsEqual(mp)){
 				return false;
-		}*/
-
+				
+			}
+			mp = elements.nextElement();
+		}
+		
 		//Verificar se chegmaos a saida:
 		if (responder.ask("aqui").equals("saida")){
 			return true;
 		}
 		//Verificar disponibilidade de caminho na ordem: oeste,norte,leste,sul:
-		if (responder.ask("oeste").equals("passagem")){
+		if (responder.ask("oeste").equals("passagem") || responder.ask("oeste").equals("saida")){
 			//Mover para oeste:
 			responder.move("oeste");
 			//Colocar a nova posicao na pilha(1 ponto a esquerda):
@@ -99,7 +100,8 @@ public class EnquirerMaze implements IEnquirer {
 				positionHistory.pop();
 			}
 			
-		}else if(responder.ask("norte").equals("passagem")){
+		}
+		if(responder.ask("norte").equals("passagem") || responder.ask("norte").equals("saida")){
 			//Mover para norte:
 			responder.move("norte");
 			//Colocar a nova posicao na pilha(1 ponto acima):
@@ -113,7 +115,8 @@ public class EnquirerMaze implements IEnquirer {
 				positionHistory.pop();
 			}
 			
-		}else if(responder.ask("leste").equals("passagem")){
+		}
+		if(responder.ask("leste").equals("passagem") || responder.ask("leste").equals("saida")){
 			//Mover para leste:
 			responder.move("leste");
 			//Colocar a nova posicao na pilha(1 ponto a direita):
@@ -126,7 +129,9 @@ public class EnquirerMaze implements IEnquirer {
 				responder.move("oeste");
 				positionHistory.pop();
 			}
-		}else if(responder.ask("sul").equals("passagem")){
+		}
+		
+		if(responder.ask("sul").equals("passagem") || responder.ask("sul").equals("saida")){
 			//Mover para sul:
 			responder.move("sul");
 			//Colocar a nova posicao na pilha(1 ponto abaixo):
