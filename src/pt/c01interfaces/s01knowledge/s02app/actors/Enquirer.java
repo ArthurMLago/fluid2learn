@@ -31,27 +31,29 @@ public class Enquirer implements IEnquirer
 //		Obter a primeira pergunta:
 		IDeclaracao decl = obj.primeira();
 		
-//		String historico[][];
 		Map<String, String> map = new HashMap<String, String>();
 		
 
-        
+//      Enquanto houverem perguntas:
 		while (decl != null) {
+//			Recolher a pergunta:
 			String pergunta = decl.getPropriedade();
-			
+//			Variavel para armazenar a resposta:
 			String resposta;
-			
+//			Se a pergunta ja foi respondida:
 			if (map.containsKey(pergunta)){
+//				A resposta eh oque ja foi respondido:
 				resposta = map.get(pergunta);
 			}else{
-			
+//				Se nao, perguntar:`	
 				resposta = responder.ask(pergunta);
-				
+//				E guardar a resposta
 				map.put(pergunta,resposta);
 			}
 			
+//			A nossa resposta esperada para o animal que estamos chutando
 			String respostaEsperada = decl.getValor();
-			
+//			
 			if (resposta.equalsIgnoreCase(respostaEsperada)){
 				decl = obj.proxima();
 			}else{

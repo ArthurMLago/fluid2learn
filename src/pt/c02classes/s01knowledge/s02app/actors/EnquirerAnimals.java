@@ -1,5 +1,7 @@
 package pt.c02classes.s01knowledge.s02app.actors;
 
+import java.util.HashMap;
+
 import pt.c02classes.s01knowledge.s01base.impl.BaseConhecimento;
 import pt.c02classes.s01knowledge.s01base.inter.IBaseConhecimento;
 import pt.c02classes.s01knowledge.s01base.inter.IDeclaracao;
@@ -16,27 +18,52 @@ public class EnquirerAnimals implements IEnquirer {
 	}
 	
 	public boolean discover() {
+		IObjetoConhecimento obj;
+//		Carregar base de conhecimento:
         IBaseConhecimento bc = new BaseConhecimento();
-        IObjetoConhecimento obj;
-		
-		bc.setScenario("animals");
-        obj = bc.recuperaObjeto("tiranossauro");
-
+//      Carregar os nomes de todos os animais:
+        int Tentativa = 0;
+        String nameList[] = bc.listaNomes();
+//		Chutar que o animal desejado eh o primeiro:
+		obj = bc.recuperaObjeto(nameList[Tentativa]);
+//		Obter a primeira pergunta:
 		IDeclaracao decl = obj.primeira();
 		
-        boolean animalEsperado = true;
-		while (decl != null && animalEsperado) {
+		HashMap<String, String> map = new HashMap<String, String>();
+		
+
+//      Enquanto houverem perguntas:
+		while (decl != null) {
+//			Recolher a pergunta:
 			String pergunta = decl.getPropriedade();
-			String respostaEsperada = decl.getValor();
+//			Variavel para armazenar a resposta:
+			String resposta;
+//			Se a pergunta ja foi respondida:
+			if (map.containsKey(pergunta)){
+//				A resposta eh oque ja foi respondido:
+				resposta = map.get(pergunta);
+			}else{
+//				Se nao, perguntar:`	
+				resposta = responder.ask(pergunta);
+//				E guardar a resposta
+				map.put(pergunta,resposta);
+			}
 			
-			String resposta = responder.ask(pergunta);
-			if (resposta.equalsIgnoreCase(respostaEsperada))
+//			A nossa resposta esperada para o animal que estamos chutando
+			String respostaEsperada = decl.getValor();
+//			
+			if (resposta.equalsIgnoreCase(respostaEsperada)){
 				decl = obj.proxima();
-			else
-				animalEsperado = false;
+			}else{
+				Tentativa++;
+				obj = bc.recuperaObjeto(nameList[Tentativa]);
+				decl = obj.primeira();
+			}
+			
+				
 		}
 		
-		boolean acertei = responder.finalAnswer("tiranossauro");
+		boolean acertei = responder.finalAnswer(nameList[Tentativa]);
 		
 		if (acertei)
 			System.out.println("Oba! Acertei!");
@@ -44,6 +71,7 @@ public class EnquirerAnimals implements IEnquirer {
 			System.out.println("fuem! fuem! fuem!");
 		
 		return acertei;
+
 	}
 
 }
