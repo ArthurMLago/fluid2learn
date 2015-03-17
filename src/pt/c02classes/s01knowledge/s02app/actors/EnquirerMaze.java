@@ -56,9 +56,13 @@ public class EnquirerMaze implements IEnquirer {
 			/*imprimir a pilha*/
 			while(positionHistory.empty() == false)
 			{
-				System.out.println("X: " + positionHistory.peek().X + "Y: "+ positionHistory.peek().Y);
+				System.out.println("X: " + positionHistory.peek().X + "; Y: "+ positionHistory.peek().Y);
 				positionHistory.pop();
 			}
+			if (responder.finalAnswer("cheguei"))
+				System.out.println("Voc� encontrou a saida!");
+			else
+				System.out.println("Fu�m fu�m fu�m!");
 			return true;
 		}
 		else
