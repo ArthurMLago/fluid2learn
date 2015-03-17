@@ -16,10 +16,10 @@ public class BaseConhecimento implements IBaseConhecimento
 	                           EXTENSAO = ".txt";
 	private String diretorio = BaseConhecimento.class.getResource(DIRETORIO_RELATIVO).getPath();
 	
-	private String scenario;
+	static private String scenario;
 	
 	public void setScenario(String scenario) {
-		this.scenario = scenario;
+		BaseConhecimento.scenario = scenario;
 	}
 	
     public String[] listaNomes()
